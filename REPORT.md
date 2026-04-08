@@ -184,7 +184,7 @@ As shown in the graphs below, there's no meaningful pattern. The model does not 
 <img width="526" height="470" alt="image" src="https://github.com/user-attachments/assets/ab5c0da6-61b6-4c95-8323-72ceb14561a8" />
 <img width="1388" height="390" alt="image" src="https://github.com/user-attachments/assets/a4d824f9-46ea-4300-ba22-e404ef56bd04" />
 
-## Logistic regression adding more features 
+## Logistic regression with more features 
 
 ### Training and validation 
 
@@ -350,7 +350,7 @@ weighted avg       0.96      0.96      0.96        92
 ```
 <img width="526" height="470" alt="image" src="https://github.com/user-attachments/assets/d5a27075-fb83-4771-9d52-8d770e6e706e" />
 
-## Decision tree model 
+## Second model: Decision tree  
 
 ### Training and validation 
 
