@@ -35,9 +35,7 @@ The raw dataset (`dirty_cafe_sales.csv`) contains **10,000 transactions** from a
 | `Transaction Date` | date          | `""` / `"ERROR"` / `"UNKNOWN"` (~3 %)  |
 | `Transaction Time` | time (HH:MM)  | `""` / `"ERROR"` / `"UNKNOWN"` (~5 %)  |
 
-The dataset is intentionally "dirty" — it mixes genuine `NaN`s with sentinel strings like `"ERROR"`, `"UNKNOWN"`, `"NULL"`, and blank values spread across every column.
-
----
+The dataset is intentionally "dirty". It mixes genuine `NaN`s with sentinel strings like `"ERROR"`, `"UNKNOWN"`, `"NULL"`, and blank values spread across every column.
 
 ## 2. Raw Data Exploration
 
@@ -63,8 +61,6 @@ Key observations from the raw distributions:
 - **Total Spent**: right-skewed continuous distribution, mostly in the \$1–\$20 range with a tail up to \$25
 - **Payment Method**: three methods (Cash, Credit Card, Digital Wallet), roughly equal frequency among valid entries
 - **Location**: two locations (In-store, Takeaway), with Takeaway slightly more common
-
----
 
 ## 3. Missing & Dirty Value Analysis
 
@@ -96,8 +92,6 @@ After normalisation, the missing-value landscape is:
 
 The **heatmap** (right panel) shows that missingness is scattered randomly across rows — there is no systematic pattern where entire rows are empty, which supports column-by-column imputation.
 
----
-
 ## 4. Type Casting & Parsing
 
 After sentinel normalisation, each column is cast to its intended type:
@@ -108,8 +102,6 @@ After sentinel normalisation, each column is cast to its intended type:
 | `Transaction Date`                          | `datetime64`        | `pd.to_datetime(errors="coerce")`                               |
 | `Transaction Time`                          | `datetime64` (time) | Parsed from `"HH:MM"` format; hour extracted as integer         |
 | `Item`, `Payment Method`, `Location`        | `category`          | Reduces memory footprint and enables categorical operations     |
-
----
 
 ## 5. Missing Value Imputation Strategy
 
@@ -134,16 +126,20 @@ Some rows are missing **both** `Item` and `Price Per Unit`. In pass 1, we can on
 
 After all imputation, `Total Spent` is verified against `Quantity × Price Per Unit`. Any mismatched rows are corrected to ensure internal consistency.
 
----
-
 ## 6. Duplicate Removal
 
 Two deduplication steps are applied:
 
-1. **Full-row duplicates** — identical across all columns → removed
-2. **Duplicate Transaction IDs** — same `Transaction ID` appearing more than once → keep first occurrence
+1. **Full-row duplicates**: identical across all columns → removed
+2. **Duplicate Transaction IDs**: same `Transaction ID` appearing more than once → keep first occurrence
 
----
+The input dataset contains no duplicates, resulting in the following output:
+
+```
+Full duplicate rows removed : 0
+Duplicate Transaction IDs  : 0
+Rows: 9,540 → 9,540
+```
 
 ## 7. Outlier Detection & Capping
 
@@ -160,11 +156,9 @@ For each column:
 
 The box plots show that `Quantity` and `Price Per Unit` had no significant outliers (bounded 1–5 by design). `Total Spent` had a few extreme values above \$25 that were capped. Overall, the distributions remain intact after capping.
 
----
-
 ## 8. Feature Engineering
 
-The following new columns are derived from existing data to support downstream analysis and modelling:
+The following new columns are derived from existing data to support analysis and modelling:
 
 ### Date-Derived Features
 
@@ -193,8 +187,6 @@ The following new columns are derived from existing data to support downstream a
 | `is_takeaway`       | `Location`       | Binary: 1 if Takeaway       |
 
 These one-hot encoded columns make the data ready for machine learning models that require numeric input.
-
----
 
 ## 9. Post-Cleaning Results & Insights
 
@@ -250,8 +242,6 @@ After the full pipeline, **zero missing values** remain in the dataset.
 - **Takeaway** accounts for roughly **70 %** of total revenue (~\$59K vs. ~\$25K for In-store). The high Takeaway share is partially a result of mode imputation on the Location column
 - Average order values are consistent across locations for the same item — the price structure does not vary by location
 
----
-
 ## 10. Final Output
 
 The cleaned dataset is exported to [`datasets/cafe_sales_cleaned.csv`](../datasets/cafe_sales_cleaned.csv).
@@ -293,4 +283,4 @@ The cleaned dataset is exported to [`datasets/cafe_sales_cleaned.csv`](../datase
 
 ---
 
-> **Note on imputation bias:** Mode imputation on `Payment Method` (→ Digital Wallet) and `Location` (→ Takeaway) inflates the share of those categories. This is a known trade-off — we preserve row count at the cost of slightly distorted categorical distributions. Keep this in mind when interpreting payment or location-specific analyses.
+> **Note on imputation bias:** Mode imputation on `Payment Method` (Digital Wallet) and `Location` (Takeaway) inflates the share of those categories. This is a known trade-off, we preserve row count at the cost of slightly distorted categorical distributions. Keep this in mind when interpreting payment or location-specific analyses.
