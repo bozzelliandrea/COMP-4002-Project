@@ -505,3 +505,137 @@ weighted avg       0.64      0.64      0.64        92
 
 <img width="790" height="490" alt="image" src="https://github.com/user-attachments/assets/f506d54d-55ce-4a96-b17a-5e0d9d7a2e1d" />
 
+# Hyperparameter optimization
+
+## Decision Tree without feature engineering 
+
+### Training and validation 
+
+The decision tree model was trained using the same feature set as the baseline logistic regression model, including basic temporal variables (day of the week, month, quarter, weekend indicator) and simple lag-based features (previous day revenue, 7-day lag, and 7-day rolling average).
+
+These features provide limited short-term memory of past revenue while keeping the model relatively simple and interpretable. Unlike the later experiments, no additional feature engineering such as extended lags, volatility measures, or seasonal flags was applied.
+
+A time-based train-test split was used:
+
+- Training set: January–September 2023  
+- Test set: October–December 2023  
+
+This ensures that the model is trained on past observations and evaluated on future data, preserving temporal order and avoiding data leakage. To improve model performance, hyperparameters were tuned using GridSearchCV. The search explored different values for maximum tree depth, minimum number of samples required to split a node, minimum number of samples in leaf nodes, and the splitting criterion (gini or entropy). The best-performing combination of parameters was selected based on cross-validated accuracy.
+
+### Results 
+
+The decision tree model achieved a training accuracy of 68.8% and a test accuracy of 64.1%, indicating moderate predictive performance. The relatively small difference between training and test accuracy suggests that the model generalises reasonably well and is not heavily overfitting.
+
+Although hyperparameter tuning was applied, the improvement over the baseline logistic regression remains limited. This suggests that the main constraint is not the model configuration, but the limited predictive power of the available features. Additionally, since GridSearchCV uses standard cross-validation, it may not fully respect the temporal structure of the data, which can lead to slightly optimistic performance estimates.
+
+Overall, the decision tree captures some short-term patterns but does not significantly outperform simpler models when only basic temporal and lag features are used.
+
+The code, along with the corresponding evaluation metrics and visualisations, is available in `./evaluation/cafemodel2.ipynb` in section `Default features/Decision Tree`.
+
+To further validate the hypothesis that model performance is driven primarily by the choice of features rather than the specific model type or its hyperparameters, we repeat the same analysis using a Random Forest model with hyperparameter optimisation, as described below.
+
+
+## Random Forest without feature engineering 
+
+### Training and validation 
+
+The Random Forest model was trained using the same feature set as the baseline models, including basic temporal variables (day of the week, month, quarter, weekend indicator) and simple lag-based features (previous day revenue, 7-day lag, and 7-day rolling average).
+
+Random Forest is an ensemble method that builds multiple decision trees on different subsets of the data and combines their predictions. This typically improves robustness and reduces the risk of overfitting compared to a single decision tree.
+
+A time-based train-test split was applied:
+
+- Training set: January–September 2023  
+- Test set: October–December 2023  
+
+This ensures that the model is trained on past data and evaluated on future observations, preserving the temporal structure of the dataset.
+
+To optimise performance, hyperparameters were tuned using GridSearchCV. The search explored different values for the number of trees, maximum tree depth, minimum samples required for splits and leaves, and the number of features considered at each split. The best-performing configuration was selected based on cross-validated accuracy.
+
+### Results 
+
+The Random Forest model achieved a training accuracy of 84.6% and a test accuracy of 63.0%. While the training accuracy is notably higher than that of the single decision tree, the test accuracy remains similar, indicating that the ensemble model does not provide a meaningful improvement in generalisation performance.
+
+The classification results show a similar pattern to previous models.
+
+Despite its greater complexity and the use of hyperparameter tuning, the Random Forest model does not significantly outperform simpler models when trained on the same limited feature set. This supports the hypothesis that predictive performance is primarily constrained by the available features rather than the choice of model or its configuration.
+
+Additionally, as with the decision tree, the use of standard cross-validation within GridSearchCV does not fully account for the temporal nature of the data, which may lead to slightly optimistic estimates of model performance.
+
+The code, along with the corresponding evaluation metrics and visualisations, is available in `./evaluation/cafemodel2.ipynb` in section `Default features/Random Forest`.
+
+Overall, the results indicate that increasing model complexity alone is insufficient to achieve better predictions without more informative features.
+To further test this hypothesis we perform hyperparmeter optimisations for both Random Forest and Decision Tree with the additional features that were shown to be important previously. The results of these experiments are summarized in the following sections.
+
+## Decision tree with feature engineering  
+
+### Training and validation 
+
+The decision tree model was retrained using an extended set of engineered features to provide richer information about revenue dynamics. In addition to the basic temporal variables (day of the week, month, quarter, weekend indicator), the model includes multiple lag features (1, 7, 14, and 30 days), rolling averages over different time windows, measures of volatility (rolling standard deviations), and indicators of momentum and percentage change.
+
+Additional binary variables were introduced to capture weekly patterns (e.g. specific days of the week) and seasonal effects (e.g. summer months and December). These features allow the model to capture short-term fluctuations, medium-term trends, and recurring seasonal behaviour in the data.
+
+A time-based train-test split was applied:
+
+- Training set: January–September 2023  
+- Test set: October–December 2023  
+
+This preserves temporal ordering and ensures that the model is evaluated on future observations.
+
+Hyperparameters were tuned using GridSearchCV. The search explored different values for tree depth, minimum samples required for splits and leaves, and the splitting criterion. The best-performing configuration was selected based on cross-validated accuracy.
+
+### Results 
+
+With the addition of engineered features, the decision tree achieved a training accuracy of 98.8% and a test accuracy of 92.4%, representing a substantial improvement over the version without feature engineering. It is also important to note that both classes are predicted with same quality (identical F1-score, differences in precision/recall less than 3%).
+
+However, the very high training accuracy suggests that the model fits the training data extremely closely. Although test performance is also high, these results should be interpreted with caution. Many of the engineered features (such as recent lags, rolling averages, and momentum) are closely related to the target variable in time, which can make the prediction task easier and potentially lead to overly optimistic performance estimates.
+
+In addition, the use of standard cross-validation within GridSearchCV does not fully respect the temporal structure of the data, which may further contribute to optimistic results.
+
+Overall, the experiment demonstrates that feature engineering has a significantly greater impact on model performance than model complexity. By incorporating richer representations of recent revenue behaviour, the model is able to capture patterns that were not detectable using basic temporal features alone. The resulting accuracy is slightly lower than that obtained with the logostic regression on the same feature set. It confirms the idea that the model performance is almost entirely determined by the feature set and not by the model architecture (algorithm type) and its hyperparameters. 
+
+### Interpretation from an autocorrelation perspective  
+
+A key reason for the strong improvement in model performance after feature engineering lies in the autocorrelation structure of the target variable (daily revenue).
+
+Autocorrelation refers to the relationship between a variable and its past values. In time series data such as daily revenue, it is common for observations to be highly dependent on recent history. For example, revenue on a given day is often influenced by revenue on the previous day, the same day in the previous week, or recent trends over several days.
+
+In this dataset, daily revenue likely exhibits strong short-term autocorrelation. This means that values such as revenue_lag_1 (yesterday’s revenue), revenue_lag_7 (same day last week), and rolling averages contain information that is highly predictive of the current day’s revenue. As a result, when these features are included, the model is effectively given direct signals about the target variable’s recent behaviour.
+
+From this perspective, the classification task becomes much easier. The model is no longer relying only on indirect indicators such as day of the week or month, but instead uses variables that are strongly correlated with the target itself. This explains the large increase in accuracy observed after adding engineered features.
+
+However, this also raises an important concern. When features are highly autocorrelated with the target and very close in time, the model may rely heavily on recent values rather than learning more generalisable patterns. Therefore, the observed behaviour suggests that the target variable is strongly autocorrelated, and that the predictive power of the models is driven primarily by this temporal dependence rather than by broader seasonal or calendar-based effects.
+
+The code, along with the corresponding evaluation metrics and visualisations, is available in `./evaluation/cafemodel2.ipynb` in section `Feature engineering/Decision Tree`.
+
+Finally, we perform the same analysis for Random Forest model.
+
+## Random forest with feature engineering   
+
+### Training and validation 
+
+The Random Forest model was retrained using the extended set of engineered features. In addition to the basic temporal variables (day of the week, month, quarter, weekend indicator), the model incorporates multiple lag features (1, 7, 14, and 30 days), rolling averages over different time windows, volatility measures (rolling standard deviations), and indicators of momentum and percentage change.
+
+Additional binary variables were included to capture weekly patterns (specific days of the week) and seasonal effects (e.g. summer months and December). These features provide the model with richer information about short-term fluctuations, medium-term trends, and recurring seasonal behaviour.
+
+A time-based train-test split was applied:
+
+- Training set: January–September 2023  
+- Test set: October–December 2023  
+
+This ensures that the model is trained on past observations and evaluated on future data, preserving the temporal structure of the dataset.
+
+To optimise performance, hyperparameters were tuned using GridSearchCV. The search explored different values for the number of trees, maximum tree depth, minimum samples required for splits and leaves, and the number of features considered at each split. The best-performing configuration was selected based on cross-validated accuracy.
+
+### Results 
+
+With the inclusion of engineered features, the Random Forest model achieved a training accuracy of 100.0% and a test accuracy of 93.5%, making it the best-performing model among all those tested apart from logistic regression described before (the difference is ~2%, which might not be statistically significant and is definitely not important from practical perspective).
+The classification results show strong and balanced performance across both classes.
+
+However, the perfect training accuracy suggests that the model fits the training data extremely closely. Although the test performance is also high, these results should be interpreted with caution. Some of the engineered features are closely related to the target variable in time, which may make the prediction task easier and lead to overly optimistic performance estimates.
+
+In addition, the use of standard cross-validation within GridSearchCV does not fully preserve the temporal ordering of the data, which may further contribute to optimistic evaluation results.
+
+Overall, the experiment reinforces that feature engineering has a significantly greater impact on model performance than model choice alone. The Random Forest benefits from the richer feature set, but the performance gains are primarily driven by the additional information provided by the engineered variables rather than the complexity of the model itself.
+
+The code, along with the corresponding evaluation metrics and visualisations, is available in `./evaluation/cafemodel2.ipynb` in section `Feature engineering/Random forest`
