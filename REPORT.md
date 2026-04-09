@@ -668,27 +668,27 @@ The dataset represents a consistent business operation with a high frequency of 
 ---
  
 # Appendix A — EDA Charts
- 
+
 ### 1. Monthly Revenue, Transactions, and Average Order Value Trend
- 
-![Monthly Revenue, Transactions, and AOV Trend](assets/media/image1.png)
- 
+
+![Monthly Revenue](docs/powerbi_dashboard_analysis/01_revenue_month_analysis.png)
+
 ### 2. Revenue and Transactions by Hour of Day
- 
-![Revenue and Transactions by Hour of Day](assets/media/image2.png)
- 
+
+![Revenue by Hour](docs/powerbi_dashboard_analysis/02_revenue_hour_analysis.png)
+
 ### 3. Top Products by Revenue Contribution and Average Unit Price
- 
-![Top Products by Revenue Contribution and Average Unit Price](assets/media/image3.png)
- 
+
+![Top Products](docs/powerbi_dashboard_analysis/03_top_items_analysis.png)
+
 ### 4. Revenue by Payment Method and Location
- 
-![Revenue by Payment Method and Location](assets/media/image4.png)
- 
+
+![Payment and Location](docs/powerbi_dashboard_analysis/04_payment_location_analysis.png)
+
 ### 5. Revenue by Time of Day, Day of Week, and Weekday vs Weekend
- 
-![Revenue by Time of Day, Day of Week, and Weekday vs Weekend](assets/media/image5.png)
- 
+
+![Time Patterns](docs/powerbi_dashboard_analysis/05_time_patterns_analysis.png)
+
 ### 6. Revenue Heatmap: Hour vs Day of Week
- 
-![Revenue Heatmap: Hour vs Day of Week](assets/media/image6.png)
+
+![Revenue Heatmap](docs/powerbi_dashboard_analysis/06_revenue_heatmap_analysis.png)
