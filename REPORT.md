@@ -639,3 +639,56 @@ In addition, the use of standard cross-validation within GridSearchCV does not f
 Overall, the experiment reinforces that feature engineering has a significantly greater impact on model performance than model choice alone. The Random Forest benefits from the richer feature set, but the performance gains are primarily driven by the additional information provided by the engineered variables rather than the complexity of the model itself.
 
 The code, along with the corresponding evaluation metrics and visualisations, is available in `./evaluation/cafemodel2.ipynb` in section `Feature engineering/Random forest`
+# 3. Exploratory Data Analysis
+ 
+The EDA has been performed using a data sample for an entire year containing 9,540 transactions, $85,179.50 revenues, 28,850 units sold, and $8.93 AOV.
+ 
+## 3.1 Temporal Trends
+ 
+Revenue is highly stable throughout the year ($6,600–$7,400 per month), with February showing the lowest figures, and seasonality effects are not prominent.
+ 
+The AOV shows completely independent fluctuations, with maximum and minimum AOV being recorded in April ($9.32) and October ($8.73), respectively, indicating some behavioral changes of customers.
+ 
+Regarding intraday patterns, two peaks in the number of customers have been identified: a morning peak at 07:00 and a higher peak at 13:00 (daily maximum number of 1,291 transactions). Lower traffic and lower AOV are observed during evenings (AOV equals $8.46 at 19:00).
+ 
+Income generation happens evenly throughout the week ($11.7K to $12.4K). Weekdays generate about 71.27% of the income, which is proportionate to the 5:2 ratio, indicating that there is no difference between weekdays and weekends. In the afternoon session, 40.89% of daily income is generated. As per the heatmap, the highest peak time on a daily basis is 13:00. Friday and Saturday lunches yield the most money ($1,780 & $1,910 respectively).
+ 
+## 3.2 Product Mix
+ 
+There are three top categories which include Juice (21.42%), Salad (19.45%) and Sandwich (15.34%), which contribute over 56% towards revenues. Juice has managed to make it because of its volumes (6,100 units @ $2.97). On the other hand, Salad and Sandwich are price and volume driven. Cookie and Tea are found at the bottom in both terms of revenues and margins.
+ 
+## 3.3 Payment Method and Location
+ 
+Digital wallet payment methods are the most popular, accounting for 54.15% of revenue, followed by cash and credit card payments, which account for approximately 23% each.
+ 
+## 3.4 Conclusion
+ 
+The dataset represents a consistent business operation with a high frequency of transactions without any outliers. The demand is highest during lunch time and afternoon hours, as well as in-store purchases. This makes the data suitable for supervised learning algorithms, specifically for predicting revenue based on time and forecasting demand per item.
+ 
+---
+ 
+# Appendix A — EDA Charts
+ 
+### 1. Monthly Revenue, Transactions, and Average Order Value Trend
+ 
+![Monthly Revenue, Transactions, and AOV Trend](assets/media/image1.png)
+ 
+### 2. Revenue and Transactions by Hour of Day
+ 
+![Revenue and Transactions by Hour of Day](assets/media/image2.png)
+ 
+### 3. Top Products by Revenue Contribution and Average Unit Price
+ 
+![Top Products by Revenue Contribution and Average Unit Price](assets/media/image3.png)
+ 
+### 4. Revenue by Payment Method and Location
+ 
+![Revenue by Payment Method and Location](assets/media/image4.png)
+ 
+### 5. Revenue by Time of Day, Day of Week, and Weekday vs Weekend
+ 
+![Revenue by Time of Day, Day of Week, and Weekday vs Weekend](assets/media/image5.png)
+ 
+### 6. Revenue Heatmap: Hour vs Day of Week
+ 
+![Revenue Heatmap: Hour vs Day of Week](assets/media/image6.png)
