@@ -10,7 +10,7 @@
 - Natalia Iakovleva
 - Benjamin Muscat
 
-## 1. Introduction
+## Introduction
 
 This report documents the end-to-end machine learning pipeline developed as the final project for COMP-4002 (Introduction to Machine Learning). The goal is to apply core ML concepts like data collection, preprocessing, exploratory data analysis, model selection, training and evaluation to a real-world business problem.
 
@@ -25,7 +25,7 @@ The project is structured into four stages:
 
 The central prediction task asks: _can we classify whether a given day will be a high-revenue or low-revenue day, based on temporal and lag-based features?_ This framing transforms the problem into a binary classification task, making it well-suited to the supervised learning techniques covered in COMP-4002.
 
-# 2. Data Preprocessing
+# Data Preprocessing
 
 ## Overview
 
@@ -137,7 +137,7 @@ The cleaned dataset (`cafe_sales_cleaned.csv`) contains **9,540 rows** and **21 
 
 **Full Documentation** docs/data_preprocessing.md
 
-# 4. Model Selection and Training
+# Model Selection and Training
 
 ## Introduction and problem statement for modelling
 
