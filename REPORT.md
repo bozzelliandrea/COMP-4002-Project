@@ -395,6 +395,16 @@ Overall, the experiment reinforces that feature engineering has a significantly 
 
 The code, along with the corresponding evaluation metrics and visualisations, is available in `./evaluation/cafemodel2.ipynb` in section `Feature engineering/Random forest`
 
+# Evaluation 
+
+Overall, a key challenge across all models is that revenue remains relatively constant over time, making it difficult to distinguish clearly between high- and low-revenue days. Because of this limited variability, the models struggle to identify strong patterns, which reduces their predictive performance. This suggests that the current dataset may not contain enough informative variation, and that additional data or more diverse features are needed to improve the reliability of predictions. Here is a brief summary of the models result. 
+
+The model for Logistic Regression model achieved 60.9% accuracy and showed a tendency to predict high-revenue days more effectively than low-revenue days. While it identified 70% of high-revenue days, it only captured 51% of low-revenue days, indicating an optimistic bias. This imbalance suggests the model may overestimate demand, which could lead to inefficient business decisions.
+
+The Logistic Regression model with additional features achieved very high accuracy (around 98%) and strong performance across both classes. However, this is likely due to data leakage or overly correlated features, making the results overly optimistic and not reliable for real-world use.
+
+The Decision Tree model performed slightly better than the baseline Logistic Regression, with 64.1% test accuracy and a small gap between training and testing results, indicating good generalization. It relies mainly on recent revenue trends rather than calendar features, suggesting it captures short-term patterns but may miss broader seasonal effects.
+
 ---
 
 # Appendix A — EDA Charts
